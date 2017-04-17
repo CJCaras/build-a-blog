@@ -2,7 +2,10 @@
 
 <html>
     <head>
-        <title>Project Idea Blog</title>
+
+        {% block title %}
+        {% endblock %}
+
     </head>
 
     <style type="text/css">
@@ -57,33 +60,15 @@
             font-size: 17px;
         }
 
+    </style>
 
     <body>
         <h1>Project Ideas!!!</h1>
 
-        <form method="post">
-            <label>
-                <div>Title</div>
-                <input type="text" name="title" value="{{title}}">
-            </label>
 
-            <label>
-                <div>Body</div>
-                <textarea name="body">{{body}}</textarea>
-            </label>
+        {% block content %}
+        {% endblock %}
 
-            <div class="error">{{error}}</div>
-
-            <input type="submit">
-        </form>
-
-        <hr>
-
-        {% for body in bodies %}
-            <div class="body">
-                <div class="body-title">{{body.title}}</div>
-                <pre class="body-body">{{body.body}} #instance of body class has a property called <body>
-            <div>
 
     </body>
 

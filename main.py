@@ -26,7 +26,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
-        self.response.out.write(*a, **kw)
+        self.response.write(*a, **kw)
 
     def render_str(self, template, **params):
         t = jinja_env.get_template(template)
@@ -35,35 +35,62 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-class Body(db.Model):
-    title = db.StringProperty(required = True)
-    body = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
+#First, set up the blog so that the new post form and the post listing are on the same page, as with AsciiChan,
+# and then separate those portions into separate routes, handler classes, and templates.
+#For now, when a user submits a new post, redirect them to the main blog page.
+
+
+class Body(db.Model): #creates an entity that allows you to make a datatype with various properties
+    subject = db.StringProperty(required = True) #String, float, integer properties
+# (required = True) issues a constraint. So if someone submits to the DB without a title, it'll be an "exception".
+#Constraints are good to prevent bad data.
+    body = db.TextProperty(required = True)  # Can also use EmailProp.. Link... PostalAddress.. Text for longer strings.
+    created = db.DateTimeProperty(auto_now_add = True) #date, time, DateTimeProperty... we chose the latter
+
+#The /blog route displays the 5 most recent posts.
+#To limit the displayed posts in this way, you'll need to filter the query results.
 
 class MainPage(Handler):
-    def render_front(self, title="", body="", error=""):  #this function creates default text boxes
-        bodies = db.GqlQuery("SELECT * FROM bodies ORDER BY created DESC")
-
-
-        self.render("front.html", title=title, body=body, error=error, bodies=bodies)  #and preserves user input for errors
+    def render_front(self, subject="", body="", error=""):  #this function creates default text boxes
+        bodies = db.GqlQuery("SELECT * FROM Body ORDER BY created DESC")
+        self.render("mainblog.html", subject=subject, body=body, error=error, bodies=bodies)  #preserves user input
 
     def get(self):
         self.render_front()
 
     def post(self):
-        title = self.request.get("title")
+        subject = self.request.get("subject")
         body = self.request.get("body")
 
-        if title and body:
-            p = body(title = title, body = body)
+        if subject and body:
+            p = Body(subject = subject, body = body)
             p.put()
 
-            self.redirect("/")
+            self.redirect("/blog")
         else:
             error = "We need both a title and body text!"
-            self.render_front(title, body, error)
+            self.render_front(subject, body, error)
 
+class NewPost(Handler):
+
+    def get(self):
+        self.render_front()
+
+    def post(self):
+        self.redirect("/blog")
+
+#You're able to submit a new post at the /newpost route/view.
+#After submitting a new post, your app displays the main blog page.
+#Note that, as with the AsciiChan example, you will likely need to refresh the main blog page to see your new post listed.
+
+#If either title or body is left empty in the new post form, the form is rendered again,
+#with a helpful error message and any previously-entered content in the same form inputs.
+
+#form input boxes must have the names 'subject' and 'content' in order for the grading script to correctly post to them.
+
+#To get the ID of an entity you just created: obj.key().id()
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage)
+    ('/blog', MainPage),
+    ('/newpost', NewPost)
 ], debug=True)

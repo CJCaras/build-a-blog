@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Project Ideas Blog</title>
+{% endblock %}
+
+
+
+{% block content %}
+
+    <h2>Read the latest submissions!</h2>
+
+    <form method="post" action="/blog">
+        <label>
+            <div>Title</div>
+            <input type="text" name="subject" value="{{subject}}">
+        </label>
+
+        <label>
+            <div>Body</div>
+            <textarea name="body">{{body}}</textarea>
+        </label>
+
+        <div class="error">{{error}}</div>
+
+        <input type="submit">
+    </form>
+
+    <hr>
+        {% for body in bodies %}
+            <div class="body">
+                <div class="body-subject">{{body.subject}}</div>
+                <pre class="body-body">{{body.body}}<pre> <!--#instance of body class has a property called body -->
+            <div>
+        {% endfor %}
+
+{% endblock %}
