@@ -10,27 +10,13 @@
 
     <h2>Read the latest submissions!</h2>
 
-    <form method="post" action="/blog">
-        <label>
-            <div>Title</div>
-            <input type="text" name="subject" value="{{subject}}">
-        </label>
-
-        <label>
-            <div>Body</div>
-            <textarea name="body">{{body}}</textarea>
-        </label>
-
-        <div class="error">{{error}}</div>
-
-        <input type="submit">
-    </form>
+    <p>Or you can <a href="/blog/newpost">create a new post</a>.</p>
 
     <hr>
-        {% for body in bodies %}
+        {% for i in bodies %}
             <div class="body">
-                <div class="body-subject">{{body.subject}}</div>
-                <pre class="body-body">{{body.body}}<pre> <!--#instance of body class has a property called body -->
+                <div class="body-subject"><a href="/blog/{{i.key().id()}}">{{i.subject}}</a></div>
+                <pre class="body-content">{{i.body}}<pre> <!--We're grabbing the subject of a DB entry in the bodies table -->
             <div>
         {% endfor %}
 

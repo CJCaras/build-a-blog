@@ -2,39 +2,28 @@
 
 
 {% block title %}
-<title>Project Ideas: New Entry</title>
+    <title>Project Ideas: New Entry</title>
 {% endblock %}
 
 
 {% block content %}
 
+    <h2>Submit a new project idea!</h2>
 
+    <form method="post" action="/blog">
+        <label>
+            <div>Title</div>
+            <input type="text" name="subject" value="{{subject}}">
+        </label>
 
+        <label>
+            <div>Content</div>
+            <textarea name="content">{{content}}</textarea>
+        </label>
 
-        <form method="post">
-            <label>
-                <div>Title</div>
-                <input type="text" name="title" value="{{title}}">
-            </label>
+        <div class="error">{{error}}</div>
 
-            <label>
-                <div>Body</div>
-                <textarea name="body">{{body}}</textarea>
-            </label>
-
-            <div class="error">{{error}}</div>
-
-            <input type="submit">
-        </form>
-
-        <hr>
-
-        <!-- {% for body in bodies %} -->
-            <div class="body">
-                <div class="body-title">{{body.title}}</div>
-                <pre class="body-body">{{body.body}} #instance of body class has a property called <body>
-            <div>
-
-
+        <input type="submit">
+    </form>
 
 {% endblock %}
