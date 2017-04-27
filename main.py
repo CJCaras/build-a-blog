@@ -67,8 +67,9 @@ class MainPage(Handler):
         if subject and content:
             p = Body(parent = blog_key(), subject = subject, body = content)
             p.put()
+            blog_id = p.key().id()
             self.redirect("/blog")
-            #self.redirect("/blog/%s" % str(p.key().id()))
+            #self.redirect("/blog/%s" % str(blog_id))
         else:
             error = "We need both a title and body text!"
             self.render("newpost.html", subject=subject, content=content, error=error)
@@ -81,8 +82,8 @@ class CreatePost(Handler):
         self.render_front()
 
 class PermaHandler(Handler):
-    def get(self, post_id):
-        key = db.Key.from_path('Body', int(post_id), parent=blog_key())
+    def get(self, blog_id):
+        key = db.Key.from_path('Body', int(blog_id), parent=blog_key())
         post = db.get(key)
 
         if not post:
@@ -94,7 +95,7 @@ class PermaHandler(Handler):
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
     ('/blog/newpost', CreatePost),
-    ('/blog/([0-9]+)', PermaHandler)#, #A regex, anything in the parenthesis
+    #(r'/blog/(\d+)', PermaHandler)#, #A regex, anything in the parenthesis
     #will be passed as a parameter for the get or post function for PermaHandler
-    #webapp2.Route(r'/', handler=PermaHandler, name='blog-entry')
+    webapp2.Route(r'/blog/<blog_id:\d+>', PermaHandler)
 ], debug=True)

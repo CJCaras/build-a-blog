@@ -16,7 +16,7 @@
         {% for i in bodies %}
             <div class="body">
                 <div class="body-subject"><a href="/blog/{{i.key().id()}}">{{i.subject}}</a></div>
-                <pre class="body-content">{{i.body}}<pre> <!--We're grabbing the subject of a DB entry in the bodies table -->
+                <p class="body-content">{{i.body}}<p> <!--We're grabbing the subject of a DB entry in the bodies table -->
             <div>
         {% endfor %}
 
