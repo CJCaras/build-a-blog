@@ -87,7 +87,7 @@ class PermaHandler(Handler):
         post = db.get(key)
 
         if not post:
-            self.error(404)
+            self.render("no_blog.html")
             return
 
         self.render("blogpost.html", post = post)
